@@ -8,15 +8,30 @@
 </head>
 
 <body>
+    <button>Terminate Worker</button>
     <script type="module">
         import { MESSAGES } from './messages.js'
+
         class CustomWorker extends Worker {
             constructor(url, options) {
-                super(url, options)
-                //super.onmessage = this.onmessage
-                this.addEventListener('message', ({ data }) => {
-                    const { type, detail } = data;
-                    this.dispatchEvent(this.createEvent(type, detail))
+                super(url, options)     
+                this.disposables = []    
+                this.on(
+                    'message',
+                    ({data})=>{
+                        const { type, detail } = data;
+                        this.dispatchEvent(this.createEvent(type, detail))
+                    }
+                )                      
+            }
+            on(message, cb){
+                this.addEventListener(message, cb)
+                this.disposables.push(()=>this.removeEventListener(message,cb))
+            }
+            emit(type,data){
+                this.postMessage({
+                    type,
+                    data
                 })
             }
             createEvent(type, detail) {
@@ -29,16 +44,26 @@
                     }
                 )
             }
+            dispose(){
+                this.disposables.forEach(d=>d())
+                this.disposables = []
+                this.terminate()
+            }
 
         }
+        const button = document.getElementsByTagName('button')[0]
         const worker = new CustomWorker('worker.js', {
             type: "module"
         })
-        worker.addEventListener(MESSAGES.return, ({ detail }) => {
-            console.log(detail)
+        button.addEventListener('click',()=>{
+            worker.dispose()
         })
-
-        worker.postMessage("Hello World")
+        
+        worker.on(MESSAGES.return, ({detail})=>{
+            console.log(detail)
+        })   
+        worker.emit(MESSAGES.return, {url:'http://localhost:8080'}) 
+        
 
     </script>
 </body>
