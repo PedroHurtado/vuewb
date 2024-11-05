@@ -1,0 +1,23 @@
+Eventos->asincrono
+
+    Capture->window (x,y)->document->root(html)->body->div
+    Target->interseccion (x,y)->RectDom ev.target
+    Buble->Capture.reverse()
+
+    <button @click="$emit('someEvent')">Click Me</button> Vue
+    <button (click)="handlerClick($event)">Click Me</button> Angular
+    <button onClick={handlerClick}>Click Me</button> React
+
+    <div @click=(item,event)>
+    <li v-for="item in items" data-id=>
+        {{ item.message }}
+    </li>
+
+    ¿Cuantos eventos tendría para un calendario?
+
+    31->1 calendario
+    O(n)->10->310
+
+    https://dmitripavlutin.com/javascript-event-delegation/
+
+    https://developer.chrome.com/docs/devtools/console/utilities?hl=es-419
