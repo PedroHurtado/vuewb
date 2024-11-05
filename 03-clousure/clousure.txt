@@ -55,3 +55,6 @@ const result = sum(5)
         }
         return new Ref
     }
+
+
+https://hackernoon.com/lang/es/observador-vs-pub-sub-patron-50d3b27f838c
