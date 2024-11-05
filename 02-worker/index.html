@@ -26,7 +26,9 @@
             }
             on(message, cb){
                 this.addEventListener(message, cb)
-                this.disposables.push(()=>this.removeEventListener(message,cb))
+                const dispose = ()=>this.removeEventListener(message,cb)
+                this.disposables.push(dispose)
+                return dispose
             }
             emit(type,data){
                 this.postMessage({

@@ -1,0 +1,57 @@
+Clousure
+
+https://developer.mozilla.org/es/docs/Web/JavaScript/Closures
+
+Es una funcion que devuelve un objeto
+
+function(a,b,c){
+    return ()=>{}
+}
+scope:this
+
+function sum(a){
+    return function(b){
+        debugger
+        return a+b
+    }
+}
+
+sum(5)(3)
+const result = sum(5)
+
+1. Control de eventos
+
+    function events(node, event, cb){
+        node.addEventListener(event,cb)
+        return ()=>node.removeEventListener(event,cb)
+    }
+2. Quien ha utilizado el ref?
+
+    Signal
+
+    function signal(initialValue){
+        let value = initialValue
+        const fn = ()=>value
+        fn.set = (newValue)=>{
+            if(newValue !== value){
+                const msg = `oldValue : ${value}, newValue ${newValue}`
+                console.log(msg)
+                value = newValue
+            }            
+        }
+        return fn
+    }
+
+
+    function ref(initialValue){
+        let state = initialValue
+        class Ref{
+            get value(){
+                return state
+            }
+            set value(value){
+                state = value
+            }
+        }
+        return new Ref
+    }
