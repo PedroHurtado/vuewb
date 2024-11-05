@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script type="module">
+        import { MESSAGES } from './messages.js'
+        class CustomWorker extends Worker {
+            constructor(url, options) {
+                super(url, options)
+                //super.onmessage = this.onmessage
+                this.addEventListener('message', ({ data }) => {
+                    const { type, detail } = data;
+                    this.dispatchEvent(this.createEvent(type, detail))
+                })
+            }
+            createEvent(type, detail) {
+                return new CustomEvent(
+                    type,
+                    {
+                        detail,
+                        bubbles: true,
+                        composed: true
+                    }
+                )
+            }
+
+        }
+        const worker = new CustomWorker('worker.js', {
+            type: "module"
+        })
+        worker.addEventListener(MESSAGES.return, ({ detail }) => {
+            console.log(detail)
+        })
+
+        worker.postMessage("Hello World")
+
+    </script>
+</body>
+
+</html>
